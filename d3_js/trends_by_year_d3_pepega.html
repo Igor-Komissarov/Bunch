@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trends by Year - D3.js</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        .line {
+            fill: none;
+            stroke-width: 2px;
+        }
+        .axis-label {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chart"></div>
+
+<script type="text/javascript">
+    // Sample Data - Replace this part with loading JSON if needed
+    const data = [
+        { "Year": 2014, "Priority": 20, "Publication": 15, "Grant": 8 },
+        { "Year": 2015, "Priority": 30, "Publication": 25, "Grant": 12 },
+        { "Year": 2016, "Priority": 25, "Publication": 20, "Grant": 18 },
+        { "Year": 2017, "Priority": 35, "Publication": 30, "Grant": 25 },
+        { "Year": 2018, "Priority": 40, "Publication": 35, "Grant": 28 },
+        { "Year": 2019, "Priority": 45, "Publication": 40, "Grant": 30 },
+        { "Year": 2020, "Priority": 50, "Publication": 45, "Grant": 32 }
+    ];
+
+    const margin = {top: 20, right: 30, bottom: 30, left: 40},
+          width = 800 - margin.left - margin.right,
+          height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#chart")
+                  .append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.Year))
+                .range([0, width]);
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => Math.max(d.Priority, d.Publication, d.Grant))])
+                .range([height, 0]);
+
+    const line = d3.line()
+                   .x(d => x(d.Year))
+                   .y(d => y(d.Priority));
+
+    // Priority line
+    svg.append("path")
+       .datum(data)
+       .attr("class", "line")
+       .attr("d", d3.line().x(d => x(d.Year)).y(d => y(d.Priority)))
+       .attr("stroke", "steelblue");
+
+    // Publication line
+    svg.append("path")
+       .datum(data)
+       .attr("class", "line")
+       .attr("d", d3.line().x(d => x(d.Year)).y(d => y(d.Publication)))
+       .attr("stroke", "green");
+
+    // Grant line
+    svg.append("path")
+       .datum(data)
+       .attr("class", "line")
+       .attr("d", d3.line().x(d => x(d.Year)).y(d => y(d.Grant)))
+       .attr("stroke", "orange");
+
+    // Axes
+    svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x).tickFormat(d3.format("d")));
+    svg.append("g").call(d3.axisLeft(y));
+
+    // Labels
+    svg.append("text")
+       .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 5})`)
+       .style("text-anchor", "middle")
+       .attr("class", "axis-label")
+       .text("Year");
+
+    svg.append("text")
+       .attr("transform", "rotate(-90)")
+       .attr("y", -margin.left + 10)
+       .attr("x", -height / 2)
+       .attr("dy", "1em")
+       .style("text-anchor", "middle")
+       .attr("class", "axis-label")
+       .text("Count");
+
+</script>
+
+</body>
+</html>

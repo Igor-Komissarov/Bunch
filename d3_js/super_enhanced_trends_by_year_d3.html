@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Enhanced Trends by Year - D3.js</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .line {
+            fill: none;
+            stroke-width: 3px;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #d3d3d3;
+            padding: 5px;
+            font-size: 12px;
+            border-radius: 3px;
+            pointer-events: none;
+        }
+        .legend, .filter {
+            font-size: 14px;
+            margin-right: 20px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .axis-label {
+            font-size: 16px;
+        }
+        #chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chart"></div>
+<div id="filters">
+    <label class="filter"><input type="checkbox" checked data-line="Priority"> Priority</label>
+    <label class="filter"><input type="checkbox" checked data-line="Publication"> Publication</label>
+    <label class="filter"><input type="checkbox" checked data-line="Grant"> Grant</label>
+</div>
+
+<script type="text/javascript">
+    const data = [
+        { "Year": 2014, "Priority": 20, "Publication": 15, "Grant": 8 },
+        { "Year": 2015, "Priority": 30, "Publication": 25, "Grant": 12 },
+        { "Year": 2016, "Priority": 25, "Publication": 20, "Grant": 18 },
+        { "Year": 2017, "Priority": 35, "Publication": 30, "Grant": 25 },
+        { "Year": 2018, "Priority": 40, "Publication": 35, "Grant": 28 },
+        { "Year": 2019, "Priority": 45, "Publication": 40, "Grant": 30 },
+        { "Year": 2020, "Priority": 50, "Publication": 45, "Grant": 32 }
+    ];
+
+    const margin = {top: 20, right: 50, bottom: 60, left: 70},
+          width = 1000 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+
+    const svg = d3.select("#chart")
+                  .append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.Year))
+                .range([0, width]);
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => Math.max(d.Priority, d.Publication, d.Grant))])
+                .range([height, 0]);
+
+    const colors = { "Priority": "steelblue", "Publication": "green", "Grant": "orange" };
+
+    const lineGenerator = (field) => d3.line()
+                                       .x(d => x(d.Year))
+                                       .y(d => y(d[field]))
+                                       .curve(d3.curveMonotoneX);
+
+    const tooltip = d3.select("body").append("div")
+                      .attr("class", "tooltip")
+                      .style("opacity", 0);
+
+    const lines = {};
+    ["Priority", "Publication", "Grant"].forEach(type => {
+        lines[type] = svg.append("path")
+                         .datum(data)
+                         .attr("class", "line")
+                         .attr("d", lineGenerator(type))
+                         .attr("stroke", colors[type])
+                         .attr("id", `line-${type}`);
+
+        svg.selectAll(`.dot-${type}`)
+           .data(data)
+           .enter()
+           .append("circle")
+           .attr("class", `dot-${type}`)
+           .attr("cx", d => x(d.Year))
+           .attr("cy", d => y(d[type]))
+           .attr("r", 5)
+           .attr("fill", colors[type])
+           .attr("stroke", "white")
+           .attr("id", `dot-${type}`)
+           .on("mouseover", (event, d) => {
+                tooltip.transition().duration(200).style("opacity", .9);
+                tooltip.html(`<strong>${type}</strong><br>Year: ${d.Year}<br>Count: ${d[type]}`)
+                       .style("left", (event.pageX + 5) + "px")
+                       .style("top", (event.pageY - 28) + "px");
+            })
+           .on("mouseout", () => tooltip.transition().duration(500).style("opacity", 0));
+    });
+
+    svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x).tickFormat(d3.format("d")));
+    svg.append("g").call(d3.axisLeft(y));
+
+    svg.append("text")
+       .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+       .style("text-anchor", "middle")
+       .attr("class", "axis-label")
+       .text("Year");
+
+    svg.append("text")
+       .attr("transform", "rotate(-90)")
+       .attr("y", -margin.left + 15)
+       .attr("x", -height / 2)
+       .attr("dy", "1em")
+       .style("text-anchor", "middle")
+       .attr("class", "axis-label")
+       .text("Count");
+
+    document.querySelectorAll(".filter input").forEach(checkbox => {
+        checkbox.addEventListener("change", (event) => {
+            const lineType = event.target.getAttribute("data-line");
+            const isChecked = event.target.checked;
+
+            d3.select(`#line-${lineType}`).style("display", isChecked ? null : "none");
+            d3.selectAll(`.dot-${lineType}`).style("display", isChecked ? null : "none");
+        });
+    });
+</script>
+
+</body>
+</html>
