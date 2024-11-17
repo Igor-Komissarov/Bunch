@@ -11,7 +11,6 @@ from googletrans import Translator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from docx import Document
 from docx.shared import Pt
-import math
 
 def grapth(yaml_file, bunch_file, output_file):
     # Загрузка названий столбцов из YAML
