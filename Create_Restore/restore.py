@@ -227,9 +227,10 @@ def json_restore(json_file):
 
     return all_names
 
-company = 'Leonardo'
+company = 'Lockheed'
 ticket, shard = login('Q_Ivan@rupto.ru', 'IiHeH8auR6UZ')
-data_filepath = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_FAN.xlsx'
+#data_filepath = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_FAN.xlsx'
+data_filepath = '/Users/igorkomissarov/Bunch/' + company + '/' + company + '_FAN.xlsx'
 fan_data = pd.read_excel(data_filepath)
 
     # Формирование строки запроса для всех FAN идентификаторов
@@ -238,7 +239,9 @@ fan_ids = ' OR '.join(fan_data['Questel unique family ID (FAN)'].astype(str))
     # Запрос данных через API и парсинг ответа
 api_fan_company('FAN_company.json', fan_ids, 'aw', ticket, shard)
 
-all = json_restore('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/FAN_company.json')
+#all = json_restore('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/FAN_company.json')
+all = json_restore('/Users/igorkomissarov/Bunch/FAN_company.json')
+
 all = pd.DataFrame(all)
 #all.to_excel('Restore.xlsx')
 def make(all):
@@ -254,7 +257,9 @@ def make(all):
         df[column] = pd.to_numeric(df[column], errors='coerce')
 
     # Шаг 2: Сохраните DataFrame в новый Excel файл
-    output_file_path = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/Restore_' + company +'.xlsx'
+    #output_file_path = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/Restore_' + company +'.xlsx'
+    output_file_path = '/Users/igorkomissarov/Bunch/' + company + '/Restore_' + company +'.xlsx'
+    
     df.drop(columns=['Unnamed: 0'], inplace=True, errors='ignore')
     df.to_excel(output_file_path, index=False, engine='openpyxl')
 

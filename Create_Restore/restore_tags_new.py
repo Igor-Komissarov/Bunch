@@ -1,11 +1,16 @@
 import pandas as pd
 import yaml
 
-company = ''
+company = 'BAE'
 # Загрузка файлов
-restore_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/Restore_' + company +'.xlsx')
-oak_tasks_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_patents_tasks.xlsx', skiprows=1, names=['Application Area', 'FAN IDs'])
-ai_groups_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_patents_ai.xlsx', skiprows=1, names=['AI Technology/Application Area', 'FAN IDs'])
+# restore_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/Restore_' + company +'.xlsx')
+# oak_tasks_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_patents_tasks.xlsx', skiprows=1, names=['Application Area', 'FAN IDs'])
+# ai_groups_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_patents_ai.xlsx', skiprows=1, names=['AI Technology/Application Area', 'FAN IDs'])
+
+restore_df = pd.read_excel('/Users/igorkomissarov/Bunch/' + company + '/Restore_' + company +'.xlsx')
+oak_tasks_df = pd.read_excel('/Users/igorkomissarov/Bunch/' + company + '/' + company + '_patents_tasks.xlsx', skiprows=1, names=['Application Area', 'FAN IDs'])
+ai_groups_df = pd.read_excel('/Users/igorkomissarov/Bunch/' + company + '/' + company + '_patents_ai.xlsx', skiprows=1, names=['AI Technology/Application Area', 'FAN IDs'])
+
 
 # Загрузка данных YAML
 with open('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/website_rup/Configurations/etalon_yaml.yaml', 'r', encoding='utf-8') as file:
@@ -102,7 +107,9 @@ def add_tag_columns_and_populate(restore_df, oak_df, ai_df, oak_task_groups, oak
 
 # Выполняем функцию и сохраняем результат
 updated_restore_df = add_tag_columns_and_populate(restore_df, oak_tasks_df, ai_groups_df, oak_task_groups, oak_ai_groups)
-output_path = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '.Реестр патентных документов.xlsx'
+#output_path = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '.Реестр патентных документов.xlsx'
+output_path = '/Users/igorkomissarov/Bunch/' + company + '/' + company + '.Реестр патентных документов.xlsx'
+
 updated_restore_df.to_excel(output_path, index=False)
 print(f"Файл сохранен по адресу: {output_path}")
 #print(f"Лог сохранен по адресу: {log_file_path}")
