@@ -147,8 +147,8 @@ def create_legal_status_pie_charts(file_path, output_image_1, output_image_2):
     # Построение графика для Legal state (Alive, Dead)
     legal_state_values = ['ALIVE', 'DEAD']
     legal_state_data = process_legal_status(df, 'Legal state (Alive, Dead)', legal_state_values)
-    legal_state_labels = {'ALIVE': 'Действующие патенты', 'DEAD': 'Недействующие патенты'}
-    legal_state_colors = {'Действующие патенты': '#4682B4', 'Недействующие патенты': 'red'}
+    legal_state_labels = {'ALIVE': 'Действующие патентные семейства', 'DEAD': 'Недействующие патентные семейства'}
+    legal_state_colors = {'Действующие патентные семейства': '#4682B4', 'Недействующие патентные семейства': 'red'}
     plot_pie_chart(
         legal_state_data, 
         'Правовое состояние с учётом делопроизводства', 
@@ -165,14 +165,14 @@ def create_legal_status_pie_charts(file_path, output_image_1, output_image_2):
         'GRANTED': 'Действующие патенты',
         'REVOKED': 'Отозванные заявки',
         'EXPIRED': 'Патенты с истёкшим сроком действия',
-        'LAPSED': 'Прекращённые патенты'
+        'LAPSED': 'Патенты, прекратившие действие по иным причинам'
     }
     legal_status_colors = {
         'Заявки на рассмотрении': '#B3D7D4',
         'Действующие патенты': '#4682B4',
         'Отозванные заявки': '#8A2BE2',
         'Патенты с истёкшим сроком действия': '#32CD32',
-        'Прекращённые патенты': 'red'
+        'Патенты, прекратившие действие по иным причинам': 'red'
     }
     plot_pie_chart(
         legal_status_data, 
@@ -337,11 +337,11 @@ def create_top_patent_word_report_with_translation(file_path_1, file_path_2, out
 # Основной код для выполнения
 company = 'Leonardo'
 yaml_file = '/Users/igorkomissarov/Bunch/column_names.yaml'
-bunch_file = f'/Users/igorkomissarov/Bunch/{company}/Diversity bunch {company}.xlsx'
-output_dir = f'/Users/igorkomissarov/Bunch/{company}'
+bunch_file = f'/Users/igorkomissarov/Bunch/Company/{company}/Diversity bunch {company}.xlsx'
+output_dir = f'/Users/igorkomissarov/Bunch/Company/{company}'
 img_dir = f'{output_dir}/Img'
 country_mapping_path = '/Users/igorkomissarov/Bunch/Разное/Расшифровка двухбуквенных кодов юрисдикций.xlsx'
-file_path_1 = f'/Users/igorkomissarov/Bunch/{company}/Restore_{company}.xlsx'
+file_path_1 = f'/Users/igorkomissarov/Bunch/Company/{company}/Restore_{company}.xlsx'
 
 graph_output_1 = f'{img_dir}/graph_1.png'
 graph_output_2 = f'{img_dir}/country_rank.png'
