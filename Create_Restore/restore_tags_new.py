@@ -1,15 +1,15 @@
 import pandas as pd
 import yaml
 
-company = 'BAE'
+company = 'Safran'
 # Загрузка файлов
 # restore_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/Restore_' + company +'.xlsx')
 # oak_tasks_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_patents_tasks.xlsx', skiprows=1, names=['Application Area', 'FAN IDs'])
 # ai_groups_df = pd.read_excel('/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_patents_ai.xlsx', skiprows=1, names=['AI Technology/Application Area', 'FAN IDs'])
 
-restore_df = pd.read_excel('/Users/igorkomissarov/Bunch/' + company + '/Restore_' + company +'.xlsx')
-oak_tasks_df = pd.read_excel('/Users/igorkomissarov/Bunch/' + company + '/' + company + '_patents_tasks.xlsx', skiprows=1, names=['Application Area', 'FAN IDs'])
-ai_groups_df = pd.read_excel('/Users/igorkomissarov/Bunch/' + company + '/' + company + '_patents_ai.xlsx', skiprows=1, names=['AI Technology/Application Area', 'FAN IDs'])
+restore_df = pd.read_excel('/Users/igorkomissarov/Bunch/Company/' + company + '/Restore_' + company +'.xlsx')
+oak_tasks_df = pd.read_excel('/Users/igorkomissarov/Bunch/Company/' + company + '/' + company + '_tasks.xlsx', names=['en_name', 'fan'])
+ai_groups_df = pd.read_excel('/Users/igorkomissarov/Bunch/Company/' + company + '/' + company + '_ai.xlsx', names=['en_name', 'fan'])
 
 
 # Загрузка данных YAML
@@ -34,15 +34,15 @@ def add_tag_columns_and_populate(restore_df, oak_df, ai_df, oak_task_groups, oak
     if restore_df['Questel unique family ID (FAN)'].isnull().any():
         log_messages.append("Внимание: Найдены пустые значения в колонке 'Questel unique family ID (FAN)' в Restore.")
 
-    if oak_df['FAN IDs'].isnull().any():
-        log_messages.append("Внимание: Найдены пустые значения в колонке 'FAN IDs' в файле OAK Tasks.")
+    if oak_df['fan'].isnull().any():
+        log_messages.append("Внимание: Найдены пустые значения в колонке 'fan' в файле OAK Tasks.")
 
-    if ai_df['FAN IDs'].isnull().any():
-        log_messages.append("Внимание: Найдены пустые значения в колонке 'FAN IDs' в файле AI Groups.")
+    if ai_df['fan'].isnull().any():
+        log_messages.append("Внимание: Найдены пустые значения в колонке 'fan' в файле AI Groups.")
 
     # Получаем уникальные теги из файлов OAK и AI, сверяя их с YAML
-    oak_tags = [tag.strip() for tag in oak_df['Application Area'].dropna().unique() if tag.strip() in oak_task_groups]
-    ai_tags = [tag.strip() for tag in ai_df['AI Technology/Application Area'].dropna().unique() if tag.strip() in oak_ai_groups]
+    oak_tags = [tag.strip() for tag in oak_df['en_name'].dropna().unique() if tag.strip() in oak_task_groups]
+    ai_tags = [tag.strip() for tag in ai_df['en_name'].dropna().unique() if tag.strip() in oak_ai_groups]
 
     # Применяем форматирование тегов, только первую букву делаем заглавной
     oak_tags = [format_tag(tag) for tag in oak_tags]
@@ -74,12 +74,12 @@ def add_tag_columns_and_populate(restore_df, oak_df, ai_df, oak_task_groups, oak
             continue
 
         # Проверяем наличие FAN в файле OAK
-        oak_rows = oak_df[oak_df['FAN IDs'].astype(str).str.contains(fan)]
+        oak_rows = oak_df[oak_df['fan'].astype(str).str.contains(fan)]
         if oak_rows.empty:
             log_messages.append(f"FAN {fan} не найден в файле OAK Tasks.")
 
         for _, oak_row in oak_rows.iterrows():
-            tag = oak_row['Application Area'].strip()
+            tag = oak_row['en_name'].strip()
             formatted_tag = format_tag(tag)
             # print(formatted_tag)
             # if formatted_tag == 'Навигационные задачи':
@@ -88,12 +88,12 @@ def add_tag_columns_and_populate(restore_df, oak_df, ai_df, oak_task_groups, oak
                 restore_df.at[index, formatted_tag] = 1  # Ставим 1 в соответствующей колонке тега
 
         # Проверяем наличие FAN в файле AI
-        ai_rows = ai_df[ai_df['FAN IDs'].astype(str).str.contains(fan)]
+        ai_rows = ai_df[ai_df['fan'].astype(str).str.contains(fan)]
         if ai_rows.empty:
             log_messages.append(f"FAN {fan} не найден в файле AI Groups.")
 
         for _, ai_row in ai_rows.iterrows():
-            tag = ai_row['AI Technology/Application Area'].strip()
+            tag = ai_row['en_name'].strip()
             formatted_tag = format_tag(tag)
             if formatted_tag in restore_df.columns:
                 restore_df.at[index, formatted_tag] = 1  # Ставим 1 в соответствующей колонке тега
@@ -108,7 +108,7 @@ def add_tag_columns_and_populate(restore_df, oak_df, ai_df, oak_task_groups, oak
 # Выполняем функцию и сохраняем результат
 updated_restore_df = add_tag_columns_and_populate(restore_df, oak_tasks_df, ai_groups_df, oak_task_groups, oak_ai_groups)
 #output_path = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '.Реестр патентных документов.xlsx'
-output_path = '/Users/igorkomissarov/Bunch/' + company + '/' + company + '.Реестр патентных документов.xlsx'
+output_path = '/Users/igorkomissarov/Bunch/Company/' + company + '/' + company + '.Реестр патентных документов.xlsx'
 
 updated_restore_df.to_excel(output_path, index=False)
 print(f"Файл сохранен по адресу: {output_path}")
