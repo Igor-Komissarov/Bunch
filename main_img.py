@@ -58,7 +58,7 @@ def grapth(yaml_file, bunch_file, output_image):
     ))
 
     y_max = max(merged_df[['Priority', 'Publication', 'Grant']].max()) + 1
-    y_ticks = list(range(0, int(y_max) + 1))  # Генерируем значения для оси Y от 0 до максимума
+    #y_ticks = list(range(0, int(y_max) + 1))  # Генерируем значения для оси Y от 0 до максимума
 
     fig.update_layout(
         title='Динамика патентования компании',
@@ -74,8 +74,8 @@ def grapth(yaml_file, bunch_file, output_image):
         yaxis=dict(
             title='Количество',
             range=[-1, y_max],
-            tickvals=y_ticks,  # Указываем только положительные значения
-            ticktext=[str(val) for val in y_ticks],  # Преобразуем значения в текст
+            # tickvals=y_ticks,  # Указываем только положительные значения
+            # ticktext=[str(val) for val in y_ticks],  # Преобразуем значения в текст
             title_standoff=25,
             tickfont=dict(size=29),
             automargin=True
@@ -335,7 +335,7 @@ def create_top_patent_word_report_with_translation(file_path_1, file_path_2, out
 
 
 # Основной код для выполнения
-company = 'Leonardo'
+company = 'Beihang'
 yaml_file = '/Users/igorkomissarov/Bunch/column_names.yaml'
 bunch_file = f'/Users/igorkomissarov/Bunch/Company/{company}/Diversity bunch {company}.xlsx'
 output_dir = f'/Users/igorkomissarov/Bunch/Company/{company}'

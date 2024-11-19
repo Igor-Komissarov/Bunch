@@ -227,10 +227,10 @@ def json_restore(json_file):
 
     return all_names
 
-company = 'Lockheed'
+company = 'Elbit'
 ticket, shard = login('Q_Ivan@rupto.ru', 'IiHeH8auR6UZ')
 #data_filepath = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/' + company + '_FAN.xlsx'
-data_filepath = '/Users/igorkomissarov/Bunch/' + company + '/' + company + '_FAN.xlsx'
+data_filepath = '/Users/igorkomissarov/Bunch/Company/' + company + '/' + company + '_FAN.xlsx'
 fan_data = pd.read_excel(data_filepath)
 
     # Формирование строки запроса для всех FAN идентификаторов
@@ -258,7 +258,7 @@ def make(all):
 
     # Шаг 2: Сохраните DataFrame в новый Excel файл
     #output_file_path = '/Users/igorkomissarov/ProjectOffice_FIPS Dropbox/Игорь Комиссаров/WorkPlace/bunch/' + company + '/Restore_' + company +'.xlsx'
-    output_file_path = '/Users/igorkomissarov/Bunch/' + company + '/Restore_' + company +'.xlsx'
+    output_file_path = '/Users/igorkomissarov/Bunch/Company/' + company + '/Restore_' + company +'.xlsx'
     
     df.drop(columns=['Unnamed: 0'], inplace=True, errors='ignore')
     df.to_excel(output_file_path, index=False, engine='openpyxl')
